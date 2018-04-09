@@ -32,6 +32,7 @@ import { Splits, SplitsJS } from '../splits/splits';
 import { RefreshRule, RefreshRuleJS } from '../refresh-rule/refresh-rule';
 import { Cluster } from '../cluster/cluster';
 import { Timekeeper } from "../timekeeper/timekeeper";
+import {dynamicFilterExecutorFactory} from "./extendable-executor";
 
 function formatTimeDiff(diff: number): string {
   diff = Math.round(Math.abs(diff) / 1000); // turn to seconds
@@ -672,9 +673,16 @@ export class DataCube implements Instance<DataCubeValue, DataCubeJS> {
   public updateWithExternal(external: External): DataCube {
     if (this.clusterName === 'native') throw new Error('can not be native and have an external');
 
+    // ## NPhase ## Set Dynamic Filter to handle application Tenants
+    var executor = dynamicFilterExecutorFactory({
+      datasets: { main: external }
+    });
+
+    /*
     var executor = basicExecutorFactory({
       datasets: { main: external }
     });
+    */
 
     return this.addAttributes(external.attributes).attachExecutor(executor);
   }

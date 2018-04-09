@@ -69,10 +69,24 @@ export class Ajax {
       if (Ajax.settingsVersionGetter) data.settingsVersion = Ajax.settingsVersionGetter();
     }
 
+    var headers: any = new Object();
+    if (window && window.location) {
+        if (window.location.search) {
+            var segments = window.location.search.split("/");
+            if (segments && segments.length > 2) {
+                headers["tenant"] = segments[1];
+                headers["study"] = segments[2];
+            } else if (segments && segments.length > 1) {
+                headers["tenant"] = segments[1];
+            }
+        }
+    }
+
     return Qajax({
-      method: options.method,
-      url: options.url,
-      data
+        method: options.method,
+        url: options.url,
+        headers,
+        data
     })
       .timeout(60000)
       .then(Qajax.filterSuccess)

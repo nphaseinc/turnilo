@@ -91,8 +91,9 @@ if (needsPatch) {
     '../../lib/polyfill/drag-drop-polyfill.min.js',
     '../../lib/polyfill/drag-drop-polyfill.css'
   ], (require) => {
-    var DragDropPolyfill = require('../../lib/polyfill/drag-drop-polyfill.min.js');
+    var DragDropPolyfill: any = require('../../lib/polyfill/drag-drop-polyfill.min.js');
     require('../../lib/polyfill/drag-drop-polyfill.css');
+
     DragDropPolyfill.Initialize({});
   }, 'ios-drag-drop');
 }

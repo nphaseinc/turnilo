@@ -16,11 +16,15 @@
  */
 
 import { Router, Request, Response } from 'express';
-import { $, Expression, RefExpression, External, Datum, Dataset, PlywoodValue, TimeRange, basicExecutorFactory, Executor, AttributeJSs } from 'plywood';
+import {
+    $, Expression, RefExpression, External, Datum, Dataset, PlywoodValue, TimeRange, basicExecutorFactory, Executor,
+    AttributeJSs, DruidExternal
+} from 'plywood';
 import { Timezone } from 'chronoshift';
 import { GetSettingsOptions } from '../../utils/settings-manager/settings-manager';
 
 import { SwivRequest } from '../../utils/index';
+import {DataCube, DataCubeValue} from "../../../common/models/data-cube/data-cube";
 
 var router = Router();
 
@@ -59,6 +63,24 @@ router.post('/', (req: SwivRequest, res: Response) => {
     return;
   }
 
+  // Adding Tenant and Study filters
+  var {tenant, study} = req.headers;
+  tenant = decodeURIComponent(tenant);
+  if (!tenant) {
+      res.status(400).send({
+          error: 'Missing RedCap tenant. Tenant value is mandatory. Aborting.',
+          message: 'Error missing RedCap tenant'
+      });
+      return;
+  }
+  if (!study) {
+      res.status(400).send({
+          error: 'Missing RedCap Study. Study value is mandatory. Aborting.',
+          message: 'Error missing RedCap study'
+      });
+      return;
+  }
+
   req.getSettings(<GetSettingsOptions>{ dataCubeOfInterest: dataCube }) // later: , settingsVersion)
     .then((appSettings: any) => {
       // var settingsBehind = false;
@@ -77,7 +99,12 @@ router.post('/', (req: SwivRequest, res: Response) => {
         return null;
       }
 
-      return myDataCube.executor(ex, { timezone: queryTimezone }).then(
+      // var filters: any = [{name: "tenant", value: tenant}];
+      // ## NPhase ## Add Dynamic filter for Tenant based Applications
+      var filters: any = [{name: "channel", value: tenant}];
+
+      // return myDataCube.executor(ex, { timezone: queryTimezone }).then(
+      return myDataCube.executor(ex, {timezone: queryTimezone}, {filters}).then(
         (data: PlywoodValue) => {
           var reply: any = {
             result: Dataset.isDataset(data) ? data.toJS() : data
