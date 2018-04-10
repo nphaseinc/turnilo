@@ -25,6 +25,9 @@
 
   .container {
     @include unpin-top($header-height);
+
+    /* @NPHASE: Move Top Header container up to fill the header */
+    top: 2px;
   }
 
   .dimension-measure-panel {

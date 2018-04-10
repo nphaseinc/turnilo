@@ -20,6 +20,9 @@
 .cube-header-bar {
   @extend %header-bar;
 
+  /* @NPHASE: HIDE Cube Header Bar from  */
+  display: none;
+
   .refreshing svg {
     animation-name: rotate;
     animation-duration: 1s;
