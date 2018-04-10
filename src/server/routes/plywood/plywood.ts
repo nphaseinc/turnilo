@@ -73,6 +73,7 @@ router.post('/', (req: SwivRequest, res: Response) => {
       });
       return;
   }
+  /*
   if (!study) {
       res.status(400).send({
           error: 'Missing RedCap Study. Study value is mandatory. Aborting.',
@@ -80,6 +81,7 @@ router.post('/', (req: SwivRequest, res: Response) => {
       });
       return;
   }
+  */
 
   req.getSettings(<GetSettingsOptions>{ dataCubeOfInterest: dataCube }) // later: , settingsVersion)
     .then((appSettings: any) => {
@@ -101,7 +103,10 @@ router.post('/', (req: SwivRequest, res: Response) => {
 
       // var filters: any = [{name: "tenant", value: tenant}];
       // ## NPhase ## Add Dynamic filter for Tenant based Applications
-      var filters: any = [{name: "channel", value: tenant}];
+      var filters: any = [{name: "tenant", value: tenant}];
+      if (study) {
+          filters = [{name: "study", value: study}];
+      }
 
       // return myDataCube.executor(ex, { timezone: queryTimezone }).then(
       return myDataCube.executor(ex, {timezone: queryTimezone}, {filters}).then(

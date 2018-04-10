@@ -1,0 +1,89 @@
+
+port: 39080
+verbose: true
+
+clusters:
+  - name: nphase
+    type: druid
+    host: localhost:8082
+    sourceListScan: auto
+    sourceListRefreshOnLoad: true
+    sourceReintrospectOnLoad: true
+
+dataCubes:
+  - name: nphase-tenant-analytics
+    title: nPhase Tenant Analitics
+    clusterName: nphase
+    timeAttribute: time
+    defaultDuration: P1D
+    defaultSortMeasure: discontinuations
+    defaultPinnedDimensions: ["tenant", "namespace", "countryName"]
+    introspection: no-autofill
+    attributeOverrides:
+      - name: commentLength
+        type: NUMBER
+      - name: deltaBucket
+        type: NUMBER
+
+    dimensions:
+      - name: time
+        title: Time
+        kind: time
+        formula: $time
+
+      - name: cityName
+        title: City Name
+        formula: $cityName
+
+      - name: countryIso
+        title: Country ISO
+        formula: $countryIsoCode
+
+      - name: countryName
+        title: Country Name
+        formula: $countryName
+
+      - name: page
+        title: Page
+        formula: $page
+
+      - name: regionIso
+        title: Region ISO
+        formula: $regionIsoCode
+
+      - name: regionName
+        title: Region Name
+        formula: $regionName
+
+    measures:
+      - name: discontinuations
+        title: Discontinuations
+        formula: $main.count()
+
+      - name: significant_protocol_deviations
+        title: Significant Protocol Deviations per Randomized Subject
+        formula: $main.sum($delta)
+
+      - name: slow_data_entry
+        title: Slow Data Entry
+        formula: $main.average($delta)
+
+      - name: total_query_rates
+        title: Total Query Rates (normalized)
+        formula: $main.sum($added)
+
+      - name: poor_query_response
+        title: Poor Query Response
+        formula: $main.average($added)
+
+      - name: high_adverse_events
+        title: High Adverse Events (AEs)
+        formula: $main.sum($deleted)
+
+      - name: serious_adverse_events
+        title: Serious Adverse Events (SAEs)
+        formula: $main.average($deleted)
+
+      - name: high_dropouts
+        title: High Dropouts due to AE
+        formula: $main.countDistinct($user)
