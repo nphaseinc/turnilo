@@ -1,6 +1,7 @@
 
 port: 39080
 verbose: true
+iframe: allow
 
 clusters:
   - name: nphase
@@ -17,43 +18,29 @@ dataCubes:
     timeAttribute: time
     defaultDuration: P1D
     defaultSortMeasure: discontinuations
-    defaultPinnedDimensions: ["tenant", "namespace", "countryName"]
+    defaultPinnedDimensions: ["cityName"]
     introspection: no-autofill
     attributeOverrides:
-      - name: commentLength
-        type: NUMBER
-      - name: deltaBucket
-        type: NUMBER
+      - name: study
+        type: STRING
 
     dimensions:
+      - name: study
+        title: Study ID
+        formula: $study
+
       - name: time
         title: Time
         kind: time
         formula: $time
 
       - name: cityName
-        title: City Name
+        title: Site
         formula: $cityName
 
       - name: countryIso
-        title: Country ISO
+        title: Status
         formula: $countryIsoCode
-
-      - name: countryName
-        title: Country Name
-        formula: $countryName
-
-      - name: page
-        title: Page
-        formula: $page
-
-      - name: regionIso
-        title: Region ISO
-        formula: $regionIsoCode
-
-      - name: regionName
-        title: Region Name
-        formula: $regionName
 
     measures:
       - name: discontinuations
