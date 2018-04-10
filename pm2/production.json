@@ -1,0 +1,17 @@
+{
+    "apps": [
+        {
+            "name": "nphase-turnilo",
+            "script": "build/server/www.js",
+            "instances": 1,
+            "exec_mode": "fork",
+            "env": {
+            },
+            "args": "--config config-nphase.production.yaml",
+            "watch": [
+                "build/server",
+                "node_modules"
+            ]
+        }
+    ]
+}
