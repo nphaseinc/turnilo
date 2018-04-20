@@ -1,5 +1,21 @@
 # Turnilo
 
+## NPhase Production Install
+
+Installation Process:
+
+```
+git clone https://github.com/nphaseinc/turnilo
+cd turnilo
+git checkout feature/nphase-tenant-support
+npm i
+npm i typings -g
+npm i pm2 -g
+typings install dt~mocha -g
+typings install dt~webpack-env -g
+pm2 start pm2/production.json
+```
+
 [![npm version](https://img.shields.io/npm/v/turnilo.svg)](https://www.npmjs.org/package/turnilo)
 [![build status](https://travis-ci.org/allegro/turnilo.svg?branch=master)](https://travis-ci.org/allegro/turnilo)
 
