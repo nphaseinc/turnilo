@@ -66,7 +66,7 @@ router.post('/', (req: SwivRequest, res: Response) => {
   // Adding Tenant and Study filters
   var {tenant, study} = req.headers;
   tenant = decodeURIComponent(tenant);
-  if (!tenant) {
+  if (!tenant || tenant == "undefined") {
       res.status(400).send({
           error: 'Missing RedCap tenant. Tenant value is mandatory. Aborting.',
           message: 'Error missing RedCap tenant'
